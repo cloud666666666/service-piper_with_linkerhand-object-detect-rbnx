@@ -1,0 +1,69 @@
+# llm_detect_rbnx — LLM-based object detection service.
+#
+# Replaces yolo_world_rbnx (YOLOE/YOLO-World) with a VLM/LLM-based
+# object detection approach. Uses OpenAI-compatible vision API to detect
+# objects in camera frames. Owns `robonix/service/perception/object_detect/*`.
+#
+# Surface:
+#   * atlas-routed MCP    object_detect/detect_object  (Pilot / pick_skill view)
+#
+# Lifecycle:
+#   on_init      — parse config (LLM endpoint, model, prompts), resolve
+#                  atlas camera contracts, spawn rclpy thread.
+#   on_deactivate — stop rclpy thread.
+#
+# Capability surface (mode = abstract, transport = wire):
+#   service/perception/object_detect/driver         mode=rpc  transport=gRPC  Driver(INIT)
+#   service/perception/object_detect/detect_object  mode=rpc  transport=MCP   DetectObject.srv
+#
+# Config (passed via Driver(CMD_INIT, config_json)):
+#   llm_base_url         LLM API endpoint (OpenAI-compatible)
+#   llm_api_key          API key for the LLM service
+#   llm_model            Model name (e.g. google/gemini-3-pro-preview)
+#   temperature          Sampling temperature (default 0.0)
+#   rgb_topic            optional override; default = atlas-resolved or
+#                        /camera/color/image_raw
+#   depth_topic          optional override; default = atlas-resolved or
+#                        /camera/depth/image_raw
+#   camera_info_topic    optional override; default = atlas-resolved or
+#                        /camera/color/camera_info
+#   rotation_cam2arm     Whether camera is mounted opposite to arm (default false)
+#
+# roboarm object-detect service — RGB frame → per-object bbox (+ OBB rotation).
+#
+# VENDORED REPACKAGING — provenance:
+#   upstream:  syswonder/service-object-detect-rbnx
+#   revision:  64cbb3c02aba3420ff17c2e74c05963c248f5425 (main, 2026-09-15)
+#   license:   unchanged — MulanPSL-2.0, exactly as upstream declares it.
+#   why:       the roboarm deploy reuses exactly one catalog package (the
+#              camera) and owns everything else in this repo.
+#
+# LOCAL DIFFERENCES vs upstream (the only two):
+#   * `detect_backend: yolo_http` — a backend that POSTs a JPEG to an external
+#     YOLO/OBB server over HTTP and returns its boxes verbatim (5th element =
+#     OBB rotation in degrees). Upstream is VLM-only by design ("no GPU /
+#     ultralytics weights"); this backend is what lets the heavy detector run
+#     on the host GPU instead of inside the ROS container. The VLM path is
+#     untouched and still the default when llm_* is configured.
+#   * config.spec — added here; upstream ships none. Documentation only, values
+#     read out of this package's code.
+manifestVersion: 1
+
+package:
+  name: robonix.service.roboarm.object_detect
+  version: 0.1.0
+  vendor: robonix
+  description: Object detection service (atlas MCP) with a VLM backend and a host-GPU yolo_http backend.
+  license: MulanPSL-2.0
+  tags: [service, perception, object_detect, llm, vlm, yolo, ros2]
+  maintainers:
+    - Joker.Yun <2353493891@qq.com>
+
+capability_id: llm_detect
+
+build: bash scripts/build.sh
+start: bash scripts/start.sh
+
+capabilities:
+  - name: robonix/service/perception/object_detect/driver
+  - name: robonix/service/perception/object_detect/detect_object
