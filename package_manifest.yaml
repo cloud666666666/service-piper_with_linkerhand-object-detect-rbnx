@@ -50,7 +50,7 @@
 manifestVersion: 1
 
 package:
-  name: robonix.service.roboarm.object_detect
+  name: robonix.service.piper_with_linkerhand.object_detect
   version: 0.1.0
   vendor: robonix
   description: Object detection service (atlas MCP) with a VLM backend and a host-GPU yolo_http backend.

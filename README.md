@@ -1,8 +1,8 @@
-# service-roboarm-object-detect-rbnx
+# service-piper_with_linkerhand-object-detect-rbnx
 
 Robonix package for **object detection**. It exposes an atlas-routed MCP service and replaces the older `yolo_world_rbnx` path. Owns the `service/perception/object_detect/*` namespace.
 
-Catalog name: `robonix.service.roboarm.object_detect`.
+Catalog name: `robonix.service.piper_with_linkerhand.object_detect`.
 
 > **Provenance — vendored repackaging.** Copied from
 > `syswonder/service-object-detect-rbnx` @ `64cbb3c` (main, 2026-09-15) so the
@@ -26,7 +26,7 @@ There is no legacy `/yolo/detect_object` ROS-service fallback in this package.
 
 - no GPU / ultralytics weights;
 - RGB → OpenAI-compatible VLM → 2D bbox;
-- in vertical-grasp mode the depth stream is completely unused (`skip_depth=true`); `service-roboarm-grasp-pose-rbnx` maps the bbox center through the calibrated 2D homography and combines it with the configured tabletop z.
+- in vertical-grasp mode the depth stream is completely unused (`skip_depth=true`); `service-piper_with_linkerhand-grasp-pose-rbnx` maps the bbox center through the calibrated 2D homography and combines it with the configured tabletop z.
 
 ## Boot ordering
 
@@ -45,7 +45,7 @@ When `rbnx boot` invokes Init the handler:
 ## Layout
 
 ```
-service-roboarm-object-detect-rbnx/
+service-piper_with_linkerhand-object-detect-rbnx/
 ├── package_manifest.yaml
 ├── capabilities/
 │   └── service/perception/object_detect/{driver,detect_object}.v1.toml

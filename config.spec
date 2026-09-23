@@ -1,4 +1,4 @@
-# Public deploy config for robonix.service.roboarm.object_detect.
+# Public deploy config for robonix.service.piper_with_linkerhand.object_detect.
 # Values below are the ones this deploy uses; the type/unit/constraint note
 # above each key is the contract.
 config:
